@@ -9,6 +9,7 @@ import com.azadi.locita.R
 import com.azadi.locita.base.BaseActivity
 import com.azadi.locita.base.GlobalData
 import com.azadi.locita.data.db.LocationModel
+import com.azadi.locita.ui.about_me.AboutMeActivity
 import com.azadi.locita.ui.post.PostActivity
 import com.azadi.locita.utility.LocationUtility.OwnLocation
 import com.azadi.locita.utility.LocationUtility.OwnLocationListener
@@ -33,10 +34,14 @@ class MainActivity : BaseActivity(), OwnLocationListener {
 
         getPermissions()
 
-        ownLocation = OwnLocation(this)
-        ownLocation?.setListener(this)
+        if (checkPermissions()){
+            ownLocation = OwnLocation(this)
+            ownLocation?.setListener(this)
 
-        GlobalData.location = currentLocation
+            GlobalData.location = currentLocation
+        }else{
+            getPermissions()
+        }
 
         fab.setOnClickListener { view ->
             var intent = Intent(this, PostActivity::class.java)
@@ -71,11 +76,14 @@ class MainActivity : BaseActivity(), OwnLocationListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_about -> true
+            R.id.action_about -> {
+                var intent = Intent(this, AboutMeActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 
     fun getPermissions() {
         val flag = PermissionUtility.CheckingPermissionIsEnabledOrNot(this)
@@ -84,16 +92,24 @@ class MainActivity : BaseActivity(), OwnLocationListener {
         }
     }
 
+    fun checkPermissions() : Boolean{
+        return PermissionUtility.CheckingPermissionIsEnabledOrNot(this)
+    }
+
+    fun requestPermissions(){
+        PermissionUtility.RequestMultiplePermission(this)
+    }
+
 
     override fun locationOn() {
-        ownLocation?.beginUpdates()
-        lati = ownLocation?.latitude
-        longi = ownLocation?.longitude
-
-        if (currentLocation != null) {
-            GlobalData.location = currentLocation
-        } else {
+        if(ownLocation != null) {
+            ownLocation?.beginUpdates()
+            lati = ownLocation?.latitude
+            longi = ownLocation?.longitude
             GlobalData.location = Utility.getLocation(lati!!, longi!!)
+        }
+        else if (currentLocation != null) {
+            GlobalData.location = currentLocation
         }
     }
 

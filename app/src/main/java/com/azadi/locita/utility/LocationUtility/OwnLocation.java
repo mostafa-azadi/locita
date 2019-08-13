@@ -386,7 +386,6 @@ public class OwnLocation implements GoogleApiClient.OnConnectionFailedListener, 
         mLocationLocationListener = createLocationListener();
         mLocationManager.requestLocationUpdates(getProviderName(), mInterval, 25, mLocationLocationListener);
     }
-
     /**
      * Stops the location updates when they aren't needed anymore so that battery can be saved
      */

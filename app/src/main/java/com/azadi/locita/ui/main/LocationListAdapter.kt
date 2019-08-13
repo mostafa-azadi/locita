@@ -43,8 +43,8 @@ class LocationListAdapter(
 
         val current = list[position]
 
-        holder.txtBody.text = current.title + "     /   " + current.lat + " , " + current.lng
-
+//        holder.txtBody.text = current.title + "     /   " + current.lat + " , " + current.lng
+        holder.txtBody.text = current.title
 
 
 
